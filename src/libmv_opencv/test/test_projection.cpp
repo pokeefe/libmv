@@ -92,9 +92,10 @@ TEST(Sfm_projection, P_From_KRt)
         0,  0,  1;
 
   Matx33d R, Rp;
-  R << 1, 0, 0,
-       0, 1, 0,
-       0, 0, 1;
+
+  R << 1,           0,           0,
+       0, sqrt(3)/2.0,         0.5,
+       0,        -0.5, sqrt(3)/2.0;
 
   Vec3d t, tp;
   t << 1, 2, 3;
@@ -106,7 +107,5 @@ TEST(Sfm_projection, P_From_KRt)
   EXPECT_MATRIX_NEAR(K, Kp, 1e-8);
   EXPECT_MATRIX_NEAR(R, Rp, 1e-8);
   EXPECT_VECTOR_NEAR(t, tp, 1e-8);
-
-  // TODO: Change the code to ensure det(R) == 1, which is not currently
-  // the case. Also add a test for that here.
+    
 }
