@@ -69,16 +69,27 @@ preconditionerFromPoints( const Mat_<double> &_points,
 
 void
 isotropicPreconditionerFromPoints( const Mat &_points,
-                                   Mat &_T )
+                                   Matx33d &_T )
 {
-    libmv::Mat points;
-    libmv::Mat3 Tr;
 
-    cv2eigen( _points, points );
+    Mat_<double> mean, variance;
+    meanAndVarianceAlongRows(_points, mean, variance);
+    
+    double var_norm = cv::norm(variance);
+    double factor = sqrt(2.0 / var_norm);
+    
+    // If variance is equal to 0.0 set scaling factor to identity.
+    // -> Else it will provide nan value (because division by 0).
+    if (var_norm < 1e-8)
+    {
+        factor = 1.0;
+        mean.setTo(1);
+    }
 
-    libmv::IsotropicPreconditionerFromPoints( points, &Tr );
+    _T << factor,      0, -factor*mean.at<double>(0,0),
+               0, factor, -factor*mean.at<double>(1,0),
+               0,      0,                            1;
 
-    eigen2cv( Tr, _T );
 }
 
 void
@@ -109,7 +120,7 @@ normalizePoints( const Mat &points,
 void
 normalizeIsotropicPoints( const Mat &points,
                           Mat &normalized_points,
-                          Mat &T )
+                          Matx33d &T )
 {
     isotropicPreconditionerFromPoints(points, T);
     applyTransformationToPoints(points, T, normalized_points);
