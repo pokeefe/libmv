@@ -37,6 +37,8 @@
 #include "opencv2/sfm/triangulation.hpp"
 #include "opencv2/sfm/fundamental.hpp"
 #include "opencv2/sfm/numeric.hpp"
+#include "opencv2/sfm/conditioning.hpp"
+
 
 #include "libmv/multiview/robust_fundamental.h"
 #include "libmv/multiview/fundamental.h"
@@ -91,17 +93,42 @@ namespace cv
     }
 
     void
-    normalizedEightPointSolver( const Mat_<double> &_x1, const Mat_<double> &_x2, Matx33d &_F )
+    normalizedEightPointSolver( const Mat_<double> &x1, const Mat_<double> &x2, Matx33d &_F )
     {
-        libmv::Mat x1, x2;
-        libmv::Mat3 F;
 
-        cv2eigen(_x1, x1);
-        cv2eigen(_x2, x2);
+        Matx33d T1, T2;
+        Mat_<double> x1_normalized, x2_normalized;
+        
+        normalizePoints(x1, x1_normalized, T1);
+        normalizePoints(x2, x2_normalized, T2);
 
-        libmv::NormalizedEightPointSolver(x1, x2, &F);
 
-        eigen2cv(F, _F);
+        int numPoints = x1_normalized.cols;
+        Mat_<double> A(numPoints, 9);
+
+        for (int i = 0; i < numPoints; ++i) {
+
+            A(i, 0) = x2_normalized(0, i) * x1_normalized(0, i);
+            A(i, 1) = x2_normalized(0, i) * x1_normalized(1, i);
+            A(i, 2) = x2_normalized(0, i);
+            A(i, 3) = x2_normalized(1, i) * x1_normalized(0, i);
+            A(i, 4) = x2_normalized(1, i) * x1_normalized(1, i);
+            A(i, 5) = x2_normalized(1, i);
+            A(i, 6) = x1_normalized(0, i);
+            A(i, 7) = x1_normalized(1, i);
+            A(i, 8) = 1;
+
+        }
+
+        Mat_<double> f;
+        cv::SVD::solveZ(A, f);
+        
+        f.reshape(0, 3).copyTo(_F);
+
+        enforceFundamentalRank2Constraint(_F);
+
+        _F = T2.t() * _F * T1;
+
     }
 
     void
