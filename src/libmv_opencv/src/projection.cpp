@@ -37,6 +37,7 @@
 
 #include "libmv/multiview/projection.h"
 #include <opencv2/core/eigen.hpp>
+#include <opencv2/calib3d/calib3d.hpp>
 #include <opencv2/sfm/eigen.hpp>
 #include <opencv2/sfm/numeric.hpp>
 
@@ -99,21 +100,18 @@ P_From_KRt(const Matx33d &K, const Matx33d &R, const Vec3d &t, Matx34d &P)
     hconcat( K*R, K*t, P );
 }
 
-// RQ decomposition HZ A4.1.1 pag.579
 void
-KRt_From_P( const Matx34d &_P, Matx33d &_K, Matx33d &_R, Vec3d &_t )
+KRt_From_P( const Matx34d &P, Matx33d &K, Matx33d &R, Vec3d &t )
 {
-    libmv::Mat34 P;
-    libmv::Mat3 K, R;
-    libmv::Vec3 t;
-
-    cv2eigen( _P, P );
-
-    libmv::KRt_From_P( P, &K, &R, &t );
-
-    eigen2cv( K, _K );
-    eigen2cv( R, _R );
-    eigen2cv( t, _t );
+    
+    Vec4d homogenousCameraCenter;
+    decomposeProjectionMatrix(P, K, R, homogenousCameraCenter);
+    
+    Vec3d cameraCenter;
+    homogeneousToEuclidean(homogenousCameraCenter, cameraCenter);
+    
+    t = -R*cameraCenter;
+    
 }
 
 

@@ -49,7 +49,7 @@ namespace cv
 */
 CV_EXPORTS
 void
-homogeneousToEuclidean(InputArray src, OutputArray dst);
+homogeneousToEuclidean(const InputArray src, OutputArray dst);
 
 /** Converts points from Euclidean to homogeneous space. E.g., ((x,y)->(x,y,1))
 * @param src Input vector of N-dimensional points
@@ -57,7 +57,7 @@ homogeneousToEuclidean(InputArray src, OutputArray dst);
 */
 CV_EXPORTS
 void
-euclideanToHomogeneous(InputArray src, OutputArray dst);
+euclideanToHomogeneous(const InputArray src, OutputArray dst);
 
 /** Get projection matrix P from K, R and t.
  *  P = K * [R|t]
