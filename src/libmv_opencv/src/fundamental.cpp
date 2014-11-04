@@ -228,7 +228,6 @@ namespace cv
         return -1;
     }
 
-// fundamentalFromEssential
     void
     fundamentalFromEssential( const Matx33d &E, const Matx33d &K1, const Matx33d &K2,
                               Matx33d &F )
@@ -236,7 +235,6 @@ namespace cv
         F = K2.inv().t() * E * K1.inv();
     }
 
-// essentialFromFundamental
     void
     essentialFromFundamental( const Matx33d &F, const Matx33d &K1, const Matx33d &K2,
                               Matx33d &E )
@@ -260,7 +258,6 @@ namespace cv
 
     }
 
-    // normalizeFundamental
     void
     normalizeFundamental( const Matx33d &F, Matx33d &F_normalized )
     {
