@@ -34,25 +34,37 @@
  */
 
 #include <opencv2/sfm/conditioning.hpp>
+#include <opencv2/sfm/projection.hpp>
+#include <opencv2/sfm/numeric.hpp>
 
-#include "libmv/multiview/conditioning.h"
 #include <opencv2/core/eigen.hpp>
 
 namespace cv
 {
 
 void
-preconditionerFromPoints( const Mat &_points,
-                          Mat &_Tr )
+preconditionerFromPoints( const Mat_<double> &_points,
+                          Matx33d &_Tr )
 {
-    libmv::Mat points;
-    libmv::Mat3 Tr;
 
-    cv2eigen( _points, points );
+    Mat_<double> mean, variance;
+    meanAndVarianceAlongRows(_points, mean, variance);
 
-    libmv::PreconditionerFromPoints( points, &Tr );
+    double xFactor = sqrt(2.0 / variance.at<double>(0,0));
+    double yFactor = sqrt(2.0 / variance.at<double>(1,0));
 
-    eigen2cv( Tr, _Tr );
+    // If variance is equal to 0.0 set scaling factor to identity.
+    // -> Else it will provide nan value (because division by 0).
+    if (variance.at<double>(0,0) < 1e-8)
+        xFactor = mean.at<double>(0,0) = 1.0;
+    
+    if (variance.at<double>(1,0) < 1e-8)
+        yFactor = mean.at<double>(1,0) = 1.0;
+
+    _Tr << xFactor,       0, -xFactor*mean.at<double>(0,0),
+                 0, yFactor, -yFactor*mean.at<double>(1,0),
+                 0,       0,                             1;
+
 }
 
 void

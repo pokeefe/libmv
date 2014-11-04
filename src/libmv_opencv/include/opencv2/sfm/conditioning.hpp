@@ -48,8 +48,8 @@ namespace cv
 */
 CV_EXPORTS
 void
-preconditionerFromPoints( const Mat &points,
-                          Mat &T );
+preconditionerFromPoints( const Mat_<double> &points,
+                          Matx33d &T );
 
 /** Point conditioning (isotropic)
     Reference: HZ2 4.4.4 pag.107
