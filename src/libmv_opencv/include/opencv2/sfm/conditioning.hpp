@@ -64,7 +64,7 @@ isotropicPreconditionerFromPoints( const Mat &points,
 CV_EXPORTS
 void
 applyTransformationToPoints( const Mat &points,
-                              const Mat &T,
+                              const Matx33d &T,
                               Mat &transformed_points );
 
 /** This function normalizes points (non isotropic)

@@ -83,18 +83,18 @@ isotropicPreconditionerFromPoints( const Mat &_points,
 
 void
 applyTransformationToPoints( const Mat &_points,
-                             const Mat &_T,
+                             const Matx33d &_T,
                              Mat &_transformed_points )
 {
-    libmv::Mat points, transformed_points;
-    libmv::Mat3 Tr;
 
-    cv2eigen( _points, points );
-    cv2eigen( _T, Tr );
+    int numPoints = _points.cols;
+    _transformed_points.create(2,numPoints, _points.type());
+    Mat p(3, numPoints, _points.type());
 
-    libmv::ApplyTransformationToPoints( points, Tr, &transformed_points );
+    euclideanToHomogeneous(_points, p);
+    p = Mat(_T) * p;
+    homogeneousToEuclidean(p, _transformed_points);
 
-    eigen2cv( transformed_points, _transformed_points );
 }
 
 void
