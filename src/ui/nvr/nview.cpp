@@ -7,7 +7,8 @@
 #include <QLabel>
 
 #include <opencv2/highgui/highgui.hpp>
-#include <opencv2/nonfree/nonfree.hpp>
+#include <opencv2/xfeatures2d/nonfree.hpp>
+#include <opencv2/features2d.hpp>
 
 #include "libmv/correspondence/export_matches_txt.h"
 #include "libmv/correspondence/import_matches_txt.h"
@@ -239,8 +240,7 @@ void MainWindow::WarningNotFunctional() {
 bool MainWindow::SelectDetectorDescriber(cv::Ptr<cv::FeatureDetector> &pDetector,
                                          cv::Ptr<cv::DescriptorExtractor> &pDescriber) {
   QStringList detector_list;
-  cv::initModule_nonfree();
-  detector_list << tr("FAST") << tr("SURF") 
+  detector_list << tr("FAST") << tr("SURF")
                 << tr("STAR") << tr("MSER");
   
   QStringList descriptor_list;
@@ -251,7 +251,7 @@ bool MainWindow::SelectDetectorDescriber(cv::Ptr<cv::FeatureDetector> &pDetector
                                         tr("Detector:"), 
                                         detector_list, 0, false, &ok);
   if (ok && !item.isEmpty()) {
-    pDetector = cv::FeatureDetector::create(item.toStdString());
+      pDetector = cv::FeatureDetector::create<cv::FeatureDetector>(item.toStdString());
     if (item.toStdString() == "FAST")
       pDetector->set("threshold", 30);
   }
@@ -259,7 +259,7 @@ bool MainWindow::SelectDetectorDescriber(cv::Ptr<cv::FeatureDetector> &pDetector
                                         tr("Descriptor:"), 
                                         descriptor_list, 3, false, &ok);
   if (ok && !item.isEmpty())    
-    pDescriber = cv::DescriptorExtractor::create(item.toStdString());
+      pDescriber = cv::DescriptorExtractor::create<cv::FeatureDetector>(item.toStdString());
   
   return ok;
 }

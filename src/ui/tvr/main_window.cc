@@ -23,6 +23,7 @@
 #include <QtGui>
 
 #ifdef __APPLE__
+    #include <OpenGL/gl.h>
     #include <OpenGL/glu.h>
 #else
     #include <GL/glu.h>
@@ -301,7 +302,7 @@ void TvrMainWindow::ComputeFeatures(int image_index) {
     }
   }
 
-  cv::Ptr<cv::FeatureDetector> detector = cv::FeatureDetector::create("FAST");
+  cv::Ptr<cv::FeatureDetector> detector = cv::FeatureDetector::create<cv::FeatureDetector>("FAST");
   detector->set("threshold", 30);
 
   vector<Feature *> features;
@@ -312,7 +313,7 @@ void TvrMainWindow::ComputeFeatures(int image_index) {
     features[i] = new libmv::PointFeature(features_cv[i]);
 
   cv::Mat descriptors;
-  cv::Ptr<cv::DescriptorExtractor> describer = cv::DescriptorExtractor::create("ORB");
+  cv::Ptr<cv::DescriptorExtractor> describer = cv::DescriptorExtractor::create<cv::FeatureDetector>("ORB");
   describer->compute(image, features_cv, descriptors);
 
   // Copy data.
