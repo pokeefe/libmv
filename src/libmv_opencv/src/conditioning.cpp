@@ -100,7 +100,7 @@ applyTransformationToPoints( const Mat &_points,
 void
 normalizePoints( const Mat &points,
                  Mat &normalized_points,
-                 Mat &T )
+                 Matx33d &T )
 {
     preconditionerFromPoints(points, T);
     applyTransformationToPoints(points, T, normalized_points);

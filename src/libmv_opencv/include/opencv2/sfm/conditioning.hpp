@@ -77,7 +77,7 @@ CV_EXPORTS
 void
 normalizePoints( const Mat &X,
                   Mat &x,
-                  Mat &T );
+                  Matx33d &T );
 
 /** This function normalizes points (isotropic)
 * @param X Input vector of N-dimensional points
