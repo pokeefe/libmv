@@ -31,7 +31,6 @@ using namespace correspondence;
 using namespace std;
 
 nRobustViewMatching::nRobustViewMatching(){
-  m_pDescriber = NULL;
 }
 
 nRobustViewMatching::nRobustViewMatching(
