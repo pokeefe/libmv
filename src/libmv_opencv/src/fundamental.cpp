@@ -251,18 +251,13 @@ namespace cv
                     const Vec3d &_t2,
                     Matx33d &_E )
     {
-        libmv::Mat3 E;
-        libmv::Mat3 R1, R2;
-        libmv::Vec3 t1, t2;
 
-        cv2eigen( _R1, R1 );
-        cv2eigen( _t1, t1 );
-        cv2eigen( _R2, R2 );
-        cv2eigen( _t2, t2 );
+        Matx33d R;
+        Vec3d t;
+        relativeCameraMotion(_R1, _t1, _R2, _t2, R, t);
+        Matx33d T_x = skewMat(t);
+        _E = T_x * R;
 
-        libmv::EssentialFromRt( R1, t1, R2, t2, &E );
-
-        eigen2cv( E, _E );
     }
 
     // normalizeFundamental
