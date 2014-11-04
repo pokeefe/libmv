@@ -112,35 +112,53 @@ namespace cv
         t = t2 - R * t1;
     }
 
-// MotionFromEssential
     void
     motionFromEssential( const Matx33d &_E, vector<Matx33d> &_Rs,
                          vector<Vec3d> &_ts )
     {
-        libmv::Mat3 E;
-        vector < libmv::Mat3 > Rs;
-        vector < libmv::Vec3 > ts;
 
-        cv2eigen(_E, E);
+        cv::SVD essentialSVD;
 
-        libmv::MotionFromEssential(E, &Rs, &ts);
+        Matx33d u, vt;
+        Matx31d w;
+        essentialSVD.compute(_E, w, u, vt);
 
-        _Rs.clear();
-        _ts.clear();
-
-        int n = Rs.size();
-        CV_Assert(ts.size() == n);
-
-        for ( int i = 0; i < n; ++i )
-        {
-            Mat R_temp, t_temp;
-
-            eigen2cv(Rs[i], R_temp);
-            _Rs.push_back(R_temp);
-
-            eigen2cv(ts[i], t_temp);
-            _ts.push_back(t_temp);
+        // Last column of U is undetermined since d = (a a 0).
+        if (determinant(u) < 0) {
+            u(0,2) *= -1;
+            u(1,2) *= -1;
+            u(2,2) *= -1;
         }
+        // Last row of Vt is undetermined since d = (a a 0).
+        if (determinant(vt) < 0) {
+            vt(2,0) *= -1;
+            vt(2,1) *= -1;
+            vt(2,2) *= -1;
+        }
+
+        Matx33d W;
+        W << 0, -1,  0,
+             1,  0,  0,
+             0,  0,  1;
+
+        Matx33d U_W_Vt = u * W * vt;
+        Matx33d U_Wt_Vt = u * W.t() * vt;
+
+        _Rs.resize(4);
+        _Rs[0] = U_W_Vt;
+        _Rs[1] = U_W_Vt;
+        _Rs[2] = U_Wt_Vt;
+        _Rs[3] = U_Wt_Vt;
+
+
+        Vec3d lastColU( u(0,2), u(1,2), u(2,2) );
+        
+        _ts.resize(4);
+        _ts[0] =  lastColU;
+        _ts[1] = -lastColU;
+        _ts[2] =  lastColU;
+        _ts[3] = -lastColU;
+
     }
 
 
