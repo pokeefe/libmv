@@ -40,13 +40,16 @@
 using namespace cv;
 using namespace std;
 
-TEST(Sfm_conditioning, normalizePoints) {
+TEST(Sfm_conditioning, normalizePoints)
+{
+
     int n = 4;
     Mat_<double> points(2, n);
     points << 0, 0, 1, 1,
               0, 2, 1, 3;
 
-    Mat_<double> T, normalized_points;
+    Mat_<double> normalized_points;
+    Matx33d T;
     normalizePoints( points, normalized_points, T );
 
     Mat_<double> mean, variance;
@@ -56,9 +59,28 @@ TEST(Sfm_conditioning, normalizePoints) {
     EXPECT_NEAR(0, mean(1), 1e-8);
     EXPECT_NEAR(2, variance(0), 1e-8);
     EXPECT_NEAR(2, variance(1), 1e-8);
+
 }
 
 TEST(Sfm_conditioning, normalizeIsotropicPoints)
 {
+
+    int n = 4;
+    Mat_<double> points(2, n);
+    points << 0, 0, 1, 1,
+    0, 2, 1, 3;
+    
+    Mat_<double> normalized_points;
+    Matx33d T;
+    normalizeIsotropicPoints( points, normalized_points, T );
+    
+    Mat_<double> mean, variance;
+    meanAndVarianceAlongRows(normalized_points, mean, variance);
+    
+    double var_norm = cv::norm(variance);
+    
+    EXPECT_NEAR(0, mean(0), 1e-8);
+    EXPECT_NEAR(0, mean(1), 1e-8);
+    EXPECT_NEAR(2, var_norm, 1e-8);
 
 }
