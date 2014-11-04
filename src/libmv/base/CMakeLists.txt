@@ -5,5 +5,6 @@ SET(BASE_SRC vector_test.cc)
 FILE(GLOB BASE_HDRS *.h)
 
 ADD_LIBRARY(base ${BASE_SRC} ${BASE_HDRS})
+TARGET_LINK_LIBRARIES(base gtest gflags glog)
 
 LIBMV_TEST(vector numeric)
