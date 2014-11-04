@@ -80,11 +80,11 @@ SET(CERES_VERSION
     ${CERES_VERSION_MAJOR}.${CERES_VERSION_MINOR}.${CERES_VERSION_PATCH})
 SET(CERES_ABI_VERSION 1.5.0)
 
-ENABLE_TESTING()
+#ENABLE_TESTING()
 
 OPTION(BUILD_TESTING
        "Enable tests"
-       ON)
+       OFF)
 
 OPTION(BUILD_ANDROID
        "Build for Android. Use build_android.sh instead of setting this."
@@ -610,12 +610,12 @@ IF (CMAKE_BUILD_TYPE STREQUAL "Release")
       ENDIF (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
       # Mac OS X
       IF (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-        SET (CERES_CXX_FLAGS "${CERES_CXX_FLAGS} -fast -msse3")
+        SET (CERES_CXX_FLAGS "${CERES_CXX_FLAGS} -msse3")
       ENDIF (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     ENDIF (${BUILD_ANDROID})
   ENDIF (CMAKE_COMPILER_IS_GNUCXX)
   IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-    SET(CERES_CXX_FLAGS "${CERES_CXX_FLAGS} -O4")
+    SET(CERES_CXX_FLAGS "${CERES_CXX_FLAGS} -O3 -Wno-unknown-warning-option")
   ENDIF()
 ENDIF (CMAKE_BUILD_TYPE STREQUAL "Release")
 
@@ -656,7 +656,7 @@ ENDIF (MSVC)
 # GCC is not strict enough by default, so enable most of the warnings.
 IF ("${UNIX}")
   SET(CMAKE_CXX_FLAGS
-      "${CMAKE_CXX_FLAGS} -Werror -Wall -Wextra -Wno-unknown-pragmas -Wno-sign-compare -Wno-unused-parameter -Wno-unused-local-typedefs")
+      "${CMAKE_CXX_FLAGS} -Wall -Wno-unused-local-typedefs")
 ENDIF ("${UNIX}")
 
 # Use a larger inlining threshold for Clang, since it hobbles Eigen,

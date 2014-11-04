@@ -41,8 +41,8 @@
 #    include <unordered_map>
 #    include <unordered_set>
 #  else
-#    include <tr1/unordered_map>
-#    include <tr1/unordered_set>
+#    include <boost/tr1/unordered_map.hpp>
+#    include <boost/tr1/unordered_set.hpp>
 #  endif
 #endif
 #include <utility>
@@ -135,32 +135,35 @@ inline uint64 Hash64NumWithSeed(uint64 num, uint64 c) {
 
 // Since on some platforms this is a doubly-nested namespace (std::tr1) and
 // others it is not, the entire namespace line must be in a macro.
-CERES_HASH_NAMESPACE_START
-
-// The outrageously annoying specializations below are for portability reasons.
-// In short, it's not possible to have two overloads of hash<pair<T1, T2>
-
-// Hasher for STL pairs. Requires hashers for both members to be defined.
-template<typename T>
-struct hash<pair<T, T> > {
-  size_t operator()(const pair<T, T>& p) const {
-    size_t h1 = hash<T>()(p.first);
-    size_t h2 = hash<T>()(p.second);
-    // The decision below is at compile time
-    return (sizeof(h1) <= sizeof(ceres::internal::uint32)) ?
-            ceres::internal::Hash32NumWithSeed(h1, h2) :
-            ceres::internal::Hash64NumWithSeed(h1, h2);
-  }
-  // Less than operator for MSVC.
-  bool operator()(const pair<T, T>& a,
-                  const pair<T, T>& b) const {
-    return a < b;
-  }
-  static const size_t bucket_size = 4;  // These are required by MSVC
-  static const size_t min_buckets = 8;  // 4 and 8 are defaults.
-};
-
-CERES_HASH_NAMESPACE_END
+//CERES_HASH_NAMESPACE_START
+//namespace std { namespace tr1 {
+//    
+//
+//// The outrageously annoying specializations below are for portability reasons.
+//// In short, it's not possible to have two overloads of hash<pair<T1, T2>
+//
+//// Hasher for STL pairs. Requires hashers for both members to be defined.
+//template<typename T>
+//struct hash<pair<T, T> > {
+//  size_t operator()(const pair<T, T>& p) const {
+//    size_t h1 = hash<T>()(p.first);
+//    size_t h2 = hash<T>()(p.second);
+//    // The decision below is at compile time
+//    return (sizeof(h1) <= sizeof(ceres::internal::uint32)) ?
+//            ceres::internal::Hash32NumWithSeed(h1, h2) :
+//            ceres::internal::Hash64NumWithSeed(h1, h2);
+//  }
+//  // Less than operator for MSVC.
+//  bool operator()(const pair<T, T>& a,
+//                  const pair<T, T>& b) const {
+//    return a < b;
+//  }
+//  static const size_t bucket_size = 4;  // These are required by MSVC
+//  static const size_t min_buckets = 8;  // 4 and 8 are defaults.
+//};
+//
+//} }
+//CERES_HASH_NAMESPACE_END
 
 #endif  // CERES_NO_TR1
 
