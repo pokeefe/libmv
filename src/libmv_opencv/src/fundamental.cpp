@@ -250,4 +250,22 @@ namespace cv
         }
     }
 
+    void
+    enforceFundamentalRank2Constraint(Matx33d &F) 
+    {
+
+        cv::SVD fundamentalSVD(F, cv::SVD::FULL_UV);
+        
+        fundamentalSVD.w.at<double>(2, 0) = 0.0;
+        
+        cv::Mat FMat = fundamentalSVD.u * Mat::diag(fundamentalSVD.w) * fundamentalSVD.vt;
+        
+        F << FMat.at<double>(0,0), FMat.at<double>(0,1), FMat.at<double>(0,2),
+             FMat.at<double>(1,0), FMat.at<double>(1,1), FMat.at<double>(1,2),
+             FMat.at<double>(2,0), FMat.at<double>(2,1), FMat.at<double>(2,2);
+
+    }
+
+
+
 } /* namespace cv */

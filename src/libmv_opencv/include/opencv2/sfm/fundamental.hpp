@@ -141,6 +141,12 @@ void
 normalizeFundamental( const Matx33d &F,
                       Matx33d &F_normalized );
 
+
+// HZ 11.1.1 pag.280
+CV_EXPORTS
+void 
+enforceFundamentalRank2Constraint(Matx33d &F);
+
 } /* namespace cv */
 
 #endif /* __cplusplus */
