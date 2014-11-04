@@ -77,10 +77,10 @@ Sfm module is divided in the following (low-level) headers:
 =============================   ========    ========   ====    =====================
 Function                        Wrapper     Port       Test    Comments
 =============================   ========    ========   ====    =====================
-preconditionerFromPoints        **DONE**    ToDo       --
-applyTransformationToPoints     **DONE**    ToDo       --
-normalizePoints                 **DONE**    --         Yes*    Port is not needed.
-normalizeIsotropicPoints        **DONE**    --         ToDo    Port is not needed.
+preconditionerFromPoints        **DONE**    **DONE**   --
+applyTransformationToPoints 	**DONE**    **DONE**   --
+normalizePoints                 **DONE**    **DONE**   Yes*    Port is not needed.
+normalizeIsotropicPoints	    **DONE**    **DONE**   Yes*    Port is not needed.
 =============================   ========    ========   ====    =====================
 
 * **fundamental.hpp**
@@ -90,13 +90,13 @@ Function                          Wrapper     Port       Test    Comments
 ================================= ========    ========   ====    =====================
 projectionsFromFundamental        **DONE**    **DONE**   Yes
 fundamentalFromProjections        **DONE**    **DONE**   Yes
-normalizedEightPointSolver        **DONE**    ToDo       Yes*
+normalizedEightPointSolver        **DONE**    **DONE**   Yes*
 relativeCameraMotion              **DONE**    **DONE**   --
-motionFromEssential               **DONE**    ToDo       Yes*
+motionFromEssential               **DONE**    **DONE**   Yes*
 MotionFromEssentialChooseSolution **DONE**    **DONE**	 Yes
 fundamentalFromEssential          **DONE**    **DONE**   Yes
 essentialFromFundamental          **DONE**    **DONE**   Yes
-essentialFromRt                   **DONE**    ToDo       Yes*
+essentialFromRt                   **DONE**    **DONE**   Yes*
 normalizeFundamental              **DONE**    **DONE**   --
 ================================= ========    ========   ====    =====================
 
@@ -119,7 +119,7 @@ depth                           **DONE**    **DONE**   No
 euclideanToHomogeneous          **DONE**    **DONE**   Yes
 homogeneousToEuclidean          **DONE**    **DONE**   Yes      ToDo: check homogeneousToEuclidean( X, X );
 P_From_KRt                      **DONE**    **DONE**   Yes*     P = K * [R t]
-KRt_From_P                      **DONE**    ToDo       Yes*     RQ decomposition HZ A4.1.1 pag.579
+KRt_From_P                      **DONE**    **DONE**   Yes*     RQ decomposition HZ A4.1.1 pag.579
 =============================   ========    ========   ====    =====================
 
 * **robust.hpp**
