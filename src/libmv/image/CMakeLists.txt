@@ -1,5 +1,11 @@
 # TODO(julien) remove this line, what's that for?
-ADD_DEFINITIONS(-DTHIS_SOURCE_DIR="\\"${CMAKE_CURRENT_SOURCE_DIR}\\"")
+# The Xcode generator on OS X has trouble with this specific string definition
+# Should probably still be removed
+if(CMAKE_GENERATOR STREQUAL "Xcode")
+  ADD_DEFINITIONS(-DTHIS_SOURCE_DIR=\"\\\\"${CMAKE_CURRENT_SOURCE_DIR}\\\\"\")
+else()
+  ADD_DEFINITIONS(-DTHIS_SOURCE_DIR="\\"${CMAKE_CURRENT_SOURCE_DIR}\\"")
+endif()
 
 FIND_PACKAGE( OpenCV REQUIRED )
 

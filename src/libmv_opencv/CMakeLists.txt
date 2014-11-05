@@ -67,8 +67,13 @@ set_target_properties(sfm_tests PROPERTIES
 
 add_test(sfm_tests  ${PROJECT_BINARY_DIR}/bin/tests/sfm_tests)
 
-ADD_DEFINITIONS(-DTEST_DATA_DIR="\\"${CMAKE_CURRENT_SOURCE_DIR}/testdata/cv/sfm/\\"")
 
+# The Xcode generator on OS X has trouble with this specific string definition
+if(CMAKE_GENERATOR STREQUAL "Xcode")
+  ADD_DEFINITIONS(-DTEST_DATA_DIR=\"\\\\"${CMAKE_CURRENT_SOURCE_DIR}/testdata/cv/sfm/\\\\"\")
+else()
+  ADD_DEFINITIONS(-DTEST_DATA_DIR="\\"${CMAKE_CURRENT_SOURCE_DIR}/testdata/cv/sfm/\\"")
+endif()
 
 ################
 #  sfm_samples
